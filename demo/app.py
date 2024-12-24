@@ -128,4 +128,4 @@ if my_upload is not None:
     else:
         predict_objects(my_upload)
 else:
-    predict_objects("assets/img/frame_19_jpg.rf.a4278f7d16f4a89920c9e081204de18d.jpg")
+    predict_objects("assets/img/bees.jpg")
