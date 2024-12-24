@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 from io import BytesIO
-import ultralytics
 from ultralytics import YOLO
 import numpy as np
 import cv2
@@ -31,8 +30,18 @@ st.sidebar.write("## 이미지 업로드 / 다운로드 :gear:")
 MAX_FILE_SIZE = 200 * 1024 * 1024  # 200MB
 
 # YOLO 모델 로드
-model = YOLO("assets/model/best.pt")
+model = YOLO("assets/model/best_16_4.pt")
 
+# 모델의 가중치 확인
+state_dict = model.model.state_dict()
+
+# 처음 5개의 레이어 가중치만 출력
+for idx, (layer_name, weights) in enumerate(state_dict.items()):
+    if idx < 5:  # 처음 5개까지만 출력
+        print(f"레이어 이름: {layer_name}, 가중치 크기: {weights}")
+    else:
+        break
+    
 # Download image
 def convert_image(img):
     buf = BytesIO()
@@ -54,6 +63,16 @@ def predict_objects(upload):
     # YOLO 모델로 예측 수행
     results = model.predict(source=img_array, imgsz=640, save=False)
 
+    # 모델의 가중치 확인
+    state_dict = model.model.state_dict()
+
+    # 처음 5개의 레이어 가중치만 출력
+    for idx, (layer_name, weights) in enumerate(state_dict.items()):
+        if idx < 5:  # 처음 5개까지만 출력
+            print(f"레이어 이름: {layer_name}, 가중치 크기: {weights}")
+        else:
+            break
+        
     # 탐지 결과 그리기
     detected_image = img_array.copy()
     for result in results[0].boxes.data.tolist():
@@ -109,4 +128,4 @@ if my_upload is not None:
     else:
         predict_objects(my_upload)
 else:
-    predict_objects("assets/img/bees.png")
+    predict_objects("assets/img/frame_19_jpg.rf.a4278f7d16f4a89920c9e081204de18d.jpg")
